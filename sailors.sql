@@ -129,11 +129,13 @@ WHERE age = (SELECT MAX(age) FROM sailors);
 -- QUERY 6: Boats reserved by >= 5 sailors aged >= 40
 -- ==================================================
 
-SELECT bid, AVG(age) AS avg_age
-FROM reserves NATURAL JOIN sailors
-WHERE age >= 40
-GROUP BY bid
-HAVING COUNT(sid) >= 5;
+SELECT r.bid AS boat_id, AVG(s.age) AS avg_age
+FROM RESERVES r
+JOIN SAILORS s ON r.sid = s.sid
+WHERE s.age >= 40
+GROUP BY r.bid
+HAVING COUNT(DISTINCT r.sid) >= 5;
+
 
 -- ==================================================
 -- QUERY 7: View for boats reserved by sailors with rating = 8
@@ -180,3 +182,4 @@ DELIMITER ;
 -- ==================================================
 
 DELETE FROM boat WHERE bid = 103;
+
