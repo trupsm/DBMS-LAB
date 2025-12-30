@@ -145,12 +145,8 @@ FROM STUDENT S
 JOIN ENROLL E ON S.regno = E.regno
 JOIN COURSE C ON E.course = C.course
 WHERE C.cname = 'DBMS'
-AND E.marks = (
-    SELECT MAX(marks)
-    FROM ENROLL E2
-    JOIN COURSE C2 ON E2.course = C2.course
-    WHERE C2.cname = 'DBMS'
-);
+ORDER BY E.marks DESC
+LIMIT 1;
 
 -- -----------------------------------------------------
 -- QUERY 5:. Create a view to display all the courses opted by a student along with marks obtained.
@@ -197,3 +193,4 @@ VALUES ('01HF999', 'John Doe', 'Computer Science', '2000-01-01');
 -- This insertion will FAIL due to trigger
 INSERT INTO ENROLL (regno, course, sem, marks)
 VALUES ('01HF999', 1, 7, 32);
+
