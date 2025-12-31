@@ -162,26 +162,12 @@ CREATE TRIGGER PreventParticipation
 BEFORE INSERT ON participated
 FOR EACH ROW
 BEGIN
-    DECLARE acc_count INT;
-
-    SELECT COUNT(*)
-    INTO acc_count
-    FROM participated p
-    JOIN accident a ON p.report_no = a.report_no
-    WHERE p.driver_id = NEW.driver_id
-      AND YEAR(a.accident_date) = (
-            SELECT YEAR(accident_date)
-            FROM accident
-            WHERE report_no = NEW.report_no
-        );
-
-    IF acc_count >= 3 THEN
+    IF (SELECT COUNT(*) FROM participated WHERE driver_id=NEW.driver_id) >= 3 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Driver already involved in 3 accidents in this year';
+        SET MESSAGE_TEXT='Driver already in 3 accidents';
     END IF;
 END;
 //
-
 DELIMITER ;
 
 
@@ -193,3 +179,4 @@ INSERT INTO accident VALUES
 --check trigger 
 INSERT INTO participated VALUES
 ('D222', 'KA-20-AB-4223', 99999, 20000);
+
